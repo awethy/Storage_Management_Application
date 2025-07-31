@@ -1,5 +1,9 @@
 using Storage_Management_Application.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Storage_Management_Application.Core.Abstractions;
+using Storage_Management_Application.Data.Repositories;
+using Storage_Management_Application.Core.ServicesAbstractions;
+using Storage_Management_Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +12,11 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IUnitsOMRepository, UnitsOMRepository>();
+builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+builder.Services.AddScoped<IUnitsOMService, UnitsOMService>();
+builder.Services.AddScoped<IResourceService, ResourceService>();
 
 var app = builder.Build();
 
