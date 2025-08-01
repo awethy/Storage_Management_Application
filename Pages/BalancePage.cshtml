@@ -1,0 +1,51 @@
+﻿@page
+@model Storage_Management_Application.Pages.BalancePageModel
+@{
+    ViewData["Title"] = "Баланс";
+}
+
+<h2 class="text-center mb-4">Баланс</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <ul class="dropdown-menu" aria-labelledby="resourceItemsDropdown">
+            <li>
+                @foreach(var resource in Model.ResourceNames)
+                {
+                    <a class="dropdown-item">@resource</a>
+                }
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="activeBalancesSection">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Ед. изм.</th>
+                <th>Количество</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Balances != null && Model.Balances.Any())
+            {
+                foreach (var balance in Model.Balances)
+                {
+                    <tr class="selectable-row">
+                        <td>@balance.Resource.Name</td>
+                        <td>@balance.UnitsOM.Name</td>
+                        <td>@balance.Quantity</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="1" class="text-center">Нет данных</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
