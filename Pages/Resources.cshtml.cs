@@ -21,6 +21,7 @@ namespace Storage_Management_Application.Pages
 
         public async Task<IActionResult> OnPostArchiveAsync(int selectedResourceId)
         {
+            // Логика архивирования ресурса
             await _resourceService.InActiveResourceAsync(selectedResourceId);
             return RedirectToPage();
         }

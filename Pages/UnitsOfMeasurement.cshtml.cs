@@ -20,6 +20,7 @@ namespace Storage_Management_Application.Pages
 
         public async Task<IActionResult> OnPostArchiveAsync(int selectedUnitId)
         {
+            //логика архивирования единицы
             await _unitsOMService.InActiveUnit(selectedUnitId);
             return RedirectToPage();
         }

@@ -1,0 +1,142 @@
+﻿@page
+@model Storage_Management_Application.Pages.ClientsModel
+@{
+    ViewData["Title"] = "Клиенты";
+}
+
+<h2 class="text-center mb-4">Ресурсы</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <button class="btn btn-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#addClientModal" id="addBtn">Добавить</button>
+        <button class="btn btn-secondary" onclick="toggleArchiveSection()" id="archiveBtn">К архиву</button>
+    </div>
+    <form method="post" asp-page-handler="Archive" class="d-inline">
+        <input type="hidden" id="selectedClientId" name="selectedClientId" />
+        <button class="btn btn-warning" type="submit" id="archivateBtn" disabled>Убрать в архив</button>
+    </form>
+</div>
+
+@* Модальное окно для добавления новой единицы измерения *@
+<div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Add">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addClientModalLabel">Добавить ресурс</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ClientName" class="form-label">Наименование</label>
+                        <input type="text" class="form-control" id="ClientName" name="ClientName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="ClientName" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="ClientName" name="ClientName" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Выход</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+c
+@if (Model.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<div id="activeClientsSection">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ActiveClients != null && Model.ActiveClients.Any())
+            {
+                foreach (var client in Model.ActiveClients)
+                {
+                    <tr class="selectable-row" data-client-id="@client.Id">
+                        <td>@client.Name</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="1" class="text-center">Нет данных</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="inActiveClientsSection" style="display:none">
+    <h4>Архивированные ресурсы</h4>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.InActiveClients != null && Model.InActiveClients.Any())
+            {
+                foreach (var client in Model.InActiveClients)
+                {
+                    <tr>
+                        <td>@client.Name</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="1" class="text-center">Нет данных</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleArchiveSection() {
+            var activeSection = document.getElementById("activeClientsSection");
+            var inactiveSection = document.getElementById("inActiveClientsSection");
+            if (inactiveSection.style.display == "none") {
+                inactiveSection.style.display = "block";
+                activeSection.style.display = "none";
+                addBtn.style.display = "none";
+                archiveBtn.textContent = "К активным";
+                archivateBtn.style.display = "none";
+            } else {
+                inactiveSection.style.display = "none";
+                activeSection.style.display = "block";
+                addBtn.style.display = "inline-block";
+                archiveBtn.textContent = "К архиву";
+                archivateBtn.style.display = "inline-block";
+            }
+        }
+    </script>
+    <script>
+        document.querySelectorAll('.selectable-row').forEach(function(row) {
+            row.addEventListener('click', function() {
+                // Удалить выделение со всех строк
+                document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('table-active'));
+                // Выделить текущую строку
+                row.classList.add('table-active');
+                // Установить выбранный ID в скрытое поле
+                document.getElementById('selectedClientId').value = row.getAttribute('data-client-id');
+                // Активировать кнопку архивирования
+                document.getElementById('archivateBtn').disabled = false;
+            });
+        });
+    </script>
+    }
