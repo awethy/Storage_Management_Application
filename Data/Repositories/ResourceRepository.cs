@@ -38,21 +38,21 @@ namespace Storage_Management_Application.Data.Repositories
 
         public async Task CreateAsync(Resource resource)
         {
-            context.Resources.Add(resource);
-            context.SaveChanges();
+           context.Resources.Add(resource);
+           await context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Resource resource)
         {
             context.Resources.Update(resource);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
             var resource = await context.Resources.FindAsync(id);
             context.Resources.Remove(resource);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task InActive(int id)
@@ -60,7 +60,7 @@ namespace Storage_Management_Application.Data.Repositories
             var resource = await GetByIdAsync(id);
             resource.IsActive = false;
             context.Resources.Update(resource);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task Active(int id)
@@ -68,7 +68,7 @@ namespace Storage_Management_Application.Data.Repositories
             var resource = await GetByIdAsync(id);
             resource.IsActive = true;
             context.Resources.Update(resource);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -15,8 +15,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IUnitsOMRepository, UnitsOMRepository>();
 builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
+builder.Services.AddScoped<IReceiptRepository, ReceiptRepository>();
+
 builder.Services.AddScoped<IUnitsOMService, UnitsOMService>();
 builder.Services.AddScoped<IResourceService, ResourceService>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IBalanceService, BalanceService>();
+builder.Services.AddScoped<IReceiptService, ReceiptService>();
 
 var app = builder.Build();
 

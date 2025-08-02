@@ -35,7 +35,8 @@ namespace Storage_Management_Application.Pages
         {
             // Логика добавления новой единицы измерения
             var name = Request.Form["ClientName"];
-            var newClient = new Client { Name = name, IsActive = true };
+            var address = Request.Form["ClientAddress"];    
+            var newClient = new Client { Name = name, Address = address, IsActive = true };
             try
             {
                 await _clientService.CreateClient(newClient);

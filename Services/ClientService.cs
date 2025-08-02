@@ -29,7 +29,7 @@ namespace Storage_Management_Application.Services
             var allClients = await _clientRepository.GetClientsAsync();
             if (allClients.Any(c => c.Name == client.Name))
             {
-                throw new InvalidOperationException($"Ресурс с именем '{client.Name}' уже существует.");
+                throw new InvalidOperationException($"Клиент с именем '{client.Name}' уже существует.");
             }
             await _clientRepository.CreateAsync(client);
         }
@@ -39,7 +39,7 @@ namespace Storage_Management_Application.Services
             var client = await _clientRepository.GetClientByIdAsync(id);
             if (client == null)
             {
-                throw new InvalidOperationException($"Ресурс с ID '{id}' не найден.");
+                throw new InvalidOperationException($"Клиент с ID '{id}' не найден.");
             }
             client.IsActive = false;
             await _clientRepository.UpdateAsync(client);

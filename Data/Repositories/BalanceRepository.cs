@@ -39,5 +39,17 @@ namespace Storage_Management_Application.Data.Repositories
                 .Where(b => b.UnitsOM.Name == unitName)
                 .ToListAsync();
         }
+
+        public async Task CreateBalance(Balance balance)
+        {
+            context.Balances.Add(balance);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateBalance(Balance balance)
+        {
+            context.Balances.Update(balance);
+            await context.SaveChangesAsync();
+        }
     }
 }

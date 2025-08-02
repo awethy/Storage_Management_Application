@@ -23,17 +23,17 @@
         <div class="modal-content">
             <form method="post" asp-page-handler="Add">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addClientModalLabel">Добавить ресурс</h5>
+                    <h5 class="modal-title" id="addClientModalLabel">Добавить клиента</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="ClientName" class="form-label">Наименование</label>
+                        <label for="ClientName" class="form-label">Имя</label>
                         <input type="text" class="form-control" id="ClientName" name="ClientName" required />
                     </div>
                     <div class="mb-3">
-                        <label for="ClientName" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="ClientName" name="ClientName" required />
+                        <label for="ClientAddress" class="form-label">Адрес</label>
+                        <input type="text" class="form-control" id="ClientAddress" name="ClientAddress" required />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -44,7 +44,7 @@
         </div>
     </div>
 </div>
-c
+
 @if (Model.ErrorMessage != null)
 {
     <div class="alert alert-danger">@Model.ErrorMessage</div>
@@ -54,7 +54,10 @@ c
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Наименование</th>
+                <th>Имя</th>
+            </tr>
+            <tr>
+                <th>Адрес</th>
             </tr>
         </thead>
         <tbody>
@@ -65,12 +68,15 @@ c
                     <tr class="selectable-row" data-client-id="@client.Id">
                         <td>@client.Name</td>
                     </tr>
+                    <tr class="selectable-row" data-client-id="@client.Id">
+                        <td>@client.Address</td>
+                    </tr>
                 }
             }
             else
             {
                 <tr>
-                    <td colspan="1" class="text-center">Нет данных</td>
+                    <td colspan="2" class="text-center">Нет данных</td>
                 </tr>
             }
         </tbody>
@@ -78,11 +84,14 @@ c
 </div>
 
 <div id="inActiveClientsSection" style="display:none">
-    <h4>Архивированные ресурсы</h4>
+    <h4>Архивированные клиенты</h4>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Наименование</th>
+                <th>Имя</th>
+            </tr>
+            <tr>
+                <th>Адрес</th>
             </tr>
         </thead>
         <tbody>
@@ -93,12 +102,15 @@ c
                     <tr>
                         <td>@client.Name</td>
                     </tr>
+                    <tr>
+                        <td>@client.Address</td>
+                    </tr>
                 }
             }
             else
             {
                 <tr>
-                    <td colspan="1" class="text-center">Нет данных</td>
+                    <td colspan="2" class="text-center">Нет данных</td>
                 </tr>
             }
         </tbody>
