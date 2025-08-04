@@ -8,12 +8,13 @@ namespace Storage_Management_Application.Data.Contexts
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             // Автоматическое создание базы данных, если она не существует
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
 
-            if (Database.GetPendingMigrations().Any())
-            {
-                Database.Migrate();
-            }
+            //if (Database.GetPendingMigrations().Any())
+            //{
+            //    Database.Migrate();
+            //}
         }
 
         public DbSet<UnitsOM> UnitsOMs { get; set; }

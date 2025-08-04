@@ -4,78 +4,52 @@
     ViewData["Title"] = "Поступления";
 }
 
-<h2 class="text-center mb-4">Поступления</h2>
 
-@* Модальное окно для добавления поступления *@
-<div class="modal fade" id="addReceiptModal" tabindex="-1" aria-labelledby="addReceiptModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="post" asp-page-handler="Add">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addReceiptModalLabel">Создать поступление</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="ReceiptNumber" class="form-label">Номер</label>
-                        <input type="text" class="form-control" id="ReceiptNumber" name="ReceiptNumber" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="ReceiptResource" class="form-label">Ресурсы</label>
-                        <select class="form-select resource-select" name="Resources[{{index}}].ResourceId" required>
-                            <option value="">Выберите ресурс...</option>
-                            @foreach (var resource in Model.AvailableResources)
-                            {
-                                <option value="@resource.Id">
-                                    @resource.Name
-                                </option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Выход</button>
-                    <button type="submit" class="btn btn-primary">Создать</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+    <h2 class="text-center mb-4">Поступления</h2>
 
-<div id="activeReceiptsSection">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Номер</th>
-                <th>Дата</th>
-                <th>Ресурс</th>
-                <th>Ед. изм.</th>
-                <th>Количество</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Receipts != null && Model.Receipts.Any())
-            {
-                foreach (var receipt in Model.Receipts)
+<a asp-page="/CreatePages/CreateReceiptPage" class="btn btn-primary mb-3">Добавить поступление</a>
+
+    <div id="activeReceiptsSection">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Номер</th>
+                    <th>Дата</th>
+                    <th>Ресурс</th>
+                    <th>Ед. изм.</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Receipts != null && Model.Receipts.Any())
                 {
-                    <tr class="selectable-row">
-                        <td>@receipt.Number</td>
-                        <td>@receipt.Date.ToString("dd.MM.yyyy")</td>
-                        @foreach (var resource in receipt.ReceiptResources)
+                    foreach (var receipt in Model.Receipts)
+                    {
+                        var resources = receipt.ReceiptResources;
+                        var resourceCount = resources.Count;
+
+                        for (int i = 0; i < resourceCount; i++)
                         {
-                            <td>@resource.Resource.Name</td>
-                            <td>@resource.UnitsOM.Name</td>
-                            <td>@resource.Quantity</td>
+                            <tr class="selectable-row">
+                                @if (i == 0)
+                                {
+                                    <td rowspan="@resourceCount">@receipt.Number</td>
+                                    <td rowspan="@resourceCount">@receipt.Date.ToShortDateString()</td>
+                                }
+                                <td>@resources[i].Resource.Name</td>
+                                <td>@resources[i].UnitsOM.Name</td>
+                                <td>@resources[i].Quantity</td>
+                            </tr>
                         }
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center">Нет данных</td>
                     </tr>
                 }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="1" class="text-center">Нет данных</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
+

@@ -7,8 +7,8 @@ namespace Storage_Management_Application.Models
         [Key]
         public int Id { get; set; }
         public int Number { get; set; }
-        public DateTime Date { get; set; } = DateTime.UtcNow;
-        public ICollection<ReceiptResource> ReceiptResources
+        public DateTime Date { get; set; }
+        public List<ReceiptResource> ReceiptResources
         {
             get; set;
         }

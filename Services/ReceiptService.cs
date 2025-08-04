@@ -1,5 +1,6 @@
 ﻿using Storage_Management_Application.Core.Abstractions;
 using Storage_Management_Application.Core.ServicesAbstractions;
+using Storage_Management_Application.Data.Repositories;
 using Storage_Management_Application.Models;
 
 namespace Storage_Management_Application.Services
@@ -7,12 +8,10 @@ namespace Storage_Management_Application.Services
     public class ReceiptService : IReceiptService
     {
         private readonly IReceiptRepository _receiptRepository;
-        private readonly IBalanceRepository _balanceRepository;
 
-        public ReceiptService(IReceiptRepository receiptRepository, IBalanceRepository balanceRepository)
+        public ReceiptService(IReceiptRepository receiptRepository)
         {
             _receiptRepository = receiptRepository;
-            _balanceRepository = balanceRepository;
         }
 
         public async Task<List<ReceiptDocument>> GetReceipts()
@@ -20,7 +19,19 @@ namespace Storage_Management_Application.Services
             return await _receiptRepository.GetAllReceipt();
         }
 
-        public async Task CreateReceipt(ReceiptDocument receiptDoc, ReceiptResource receiptRes)
+        public async Task CreateReceiptRes(ReceiptResource receiptRes, int receiptDocId)
+        {
+            var newReceiptRes = new ReceiptResource
+            {
+                ReceiptDocumentId = receiptDocId,
+                ResourceId = receiptRes.ResourceId,
+                UnitsOMId = receiptRes.UnitsOMId,
+                Quantity = receiptRes.Quantity
+            };
+            await _receiptRepository.CreateReceipRes(newReceiptRes);
+        }
+
+        public async Task CreateReceiptDoc(ReceiptDocument receiptDoc)
         {
             var allReceipts = await _receiptRepository.GetAllReceipt();
             if (allReceipts.Any(r => r.Number == receiptDoc.Number))
@@ -29,14 +40,7 @@ namespace Storage_Management_Application.Services
             }
             else
             {
-                await _receiptRepository.CreateReceipt(receiptDoc, receiptRes);
-                var newBalance = new Balance
-                {
-                    ResourceId = receiptRes.ResourceId,
-                    UnitsOMId = receiptRes.UnitsOMId,
-                    Quantity = receiptRes.Quantity
-                };
-                await _balanceRepository.CreateBalance(newBalance);
+                await _receiptRepository.CreateReceiptDoc(receiptDoc);
             }
         }
     }

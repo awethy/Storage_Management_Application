@@ -5,6 +5,7 @@ namespace Storage_Management_Application.Core.Abstractions
     public interface IReceiptRepository
     {
         Task<List<ReceiptDocument>> GetAllReceipt();
-        Task CreateReceipt(ReceiptDocument receiptDoc, ReceiptResource receiptRes);
+        Task CreateReceiptDoc(ReceiptDocument receiptDoc);
+        Task CreateReceipRes(ReceiptResource receiptRes);
     }
 }

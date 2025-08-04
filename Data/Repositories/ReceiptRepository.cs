@@ -21,9 +21,14 @@ namespace Storage_Management_Application.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task CreateReceipt(ReceiptDocument receiptDoc, ReceiptResource receiptRes)
+        public async Task CreateReceiptDoc(ReceiptDocument receiptDoc)
         {
             _context.ReceiptDocuments.Add(receiptDoc);
+            await _context.SaveChangesAsync();
+        }
+        
+        public async Task CreateReceipRes(ReceiptResource receiptRes)
+        {
             _context.ReceiptResources.Add(receiptRes);
             await _context.SaveChangesAsync();
         }

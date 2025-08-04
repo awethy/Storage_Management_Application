@@ -13,42 +13,32 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <span class="navbar-brand fw-bold fs-4">Управление складом</span>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <!-- Склад -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="warehouseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Склад
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="warehouseDropdown">
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-page="/Index">Главная</a>
-                                </li>
-                            </ul>
-                            <ul class="dropdown-menu" aria-labelledby="warehouseDropdown">
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-page="/Index">Главная</a>
-                                </li>
-                            </ul>
+                <div class="collapse navbar-collapse" id="mainNavbar"> 
+                    <ul class="navbar-nav me-auto">
+
+                        <li class="nav-item d-flex flex-row me-2">
+                            <a class="btn btn-outline-primary me-1" asp-page="/BalancePage">Баланс</a>
+                            <a class="btn btn-outline-primary me-1" asp-page="/ReceiptPage">Поступления</a>
+                            <a class="btn btn-outline-primary me-1" asp-page="/">Отгрузки</a>
                         </li>
+
                         <!-- Справочники -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="referenceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                                 Справочники
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="referenceDropdown">
+                            <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" asp-area="" asp-page="/UnitsOfMeasurement">Единицы измерения</a>
+                                    <a class="dropdown-item" asp-page="/UnitsOfMeasurement">Единицы измерения</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" asp-area="" asp-page="/Resources">Ресурсы</a>
+                                    <a class="dropdown-item" asp-page="/Resources">Ресурсы</a>
                                 </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area="" asp-page="/Clients">Клиенты</a>
+                                <li>    
+                                    <a class="dropdown-item" asp-page="/Clients">Клиенты</a>
                                 </li>
                             </ul>
                         </li>

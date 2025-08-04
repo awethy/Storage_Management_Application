@@ -1,0 +1,85 @@
+﻿@page
+@model Storage_Management_Application.Pages.CreatePages.CreateReceiptPageModel
+@{
+    ViewData["Title"] = "Создать поступление";
+}
+<form method="post">
+    <div class="mb-3 d-flex gap-3">
+        <div>
+            <label>Номер</label>
+            <input type="number" name="Receipt.Number" class="form-control" required />
+        </div>
+        <div>
+            <label>Дата</label>
+            <input type="date" name="Receipt.Date" class="form-control" required />
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Ресурс</th>
+                <th>Ед. изм.</th>
+                <th>Кол-во</th>
+                <th><button type="button" class="btn btn-success" id="add-row">Добавить</button></th>
+            </tr>
+        </thead>
+        <tbody id="resource-rows">
+            <!-- строки добавляются JavaScript'ом -->
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+
+    <!-- Шаблон строки -->
+    <template id="row-template">
+        <tr>
+            <td>
+                <select class="form-control resource-select">
+                    @foreach (var res in Model.AvailableResources)
+                    {
+                        <option value="@res.Id">@res.Name</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <select class="form-control unit-select">
+                    @foreach (var unit in Model.AvailableUnits)
+                    {
+                        <option value="@unit.Id">@unit.Name</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <input type="number" step="any" class="form-control quantity-input" />
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm remove-row">Удалить</button>
+            </td>
+        </tr>
+    </template>
+</form>
+
+@section Scripts {
+    <script>
+        let rowIndex = 0;
+
+        document.getElementById("add-row").addEventListener("click", function () {
+            const template = document.getElementById("row-template");
+            const clone = template.content.cloneNode(true);
+
+            clone.querySelector(".resource-select").name = `Receipt.ReceiptResources[${rowIndex}].ResourceId`;
+            clone.querySelector(".unit-select").name = `Receipt.ReceiptResources[${rowIndex}].UnitsOMId`;
+            clone.querySelector(".quantity-input").name = `Receipt.ReceiptResources[${rowIndex}].Quantity`;
+
+            document.getElementById("resource-rows").appendChild(clone);    
+            rowIndex++;
+        });
+
+        document.addEventListener("click", function (e) {
+            if (e.target && e.target.classList.contains("remove-row")) {
+                e.target.closest("tr").remove();
+            }
+        });
+    </script>
+}
