@@ -1,53 +1,51 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Storage_Management_Application.Core.Abstractions;
+using Storage_Management_Application.Core.ServicesAbstractions;
 using Storage_Management_Application.Models;
-using System.Runtime;
+using System.Runtime.CompilerServices;
 
 namespace Storage_Management_Application.Pages
 {
     public class BalancePageModel : PageModel
     {
         private readonly IBalanceRepository _balanceRepository;
+        private readonly IResourceService _resourceService;
+        public readonly IUnitsOMService _unitsOMService;
 
-        public BalancePageModel(IBalanceRepository balanceRepository)
+        public BalancePageModel(IBalanceRepository balanceRepository, IResourceService resourceService, IUnitsOMService unitsOMService)
         {
             _balanceRepository = balanceRepository ?? throw new ArgumentNullException(nameof(balanceRepository));
+            _resourceService = resourceService ?? throw new ArgumentNullException(nameof(resourceService));
+            _unitsOMService = unitsOMService ?? throw new ArgumentNullException(nameof(unitsOMService));
         }
 
+        [BindProperty(SupportsGet = true)]
+        public int? SelectedResourceId { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public int? SelectedUnitId { get; set; }
+
         public List<Balance> Balances { get; set; } = new List<Balance>();
-        public List<string> ResourceNames { get; set; } = new List<string>();
+        public List<Resource> Resources { get; set; } = new List<Resource>();
+        public List<UnitsOM> Units { get; set; } = new List<UnitsOM>();
 
         public async Task OnGetAsync()
         {
-            Balances = await _balanceRepository.GetAllBalancesAsync();
-            ResourceNames = Balances.Select(b => b.Resource.Name).Distinct().ToList();
-        }
+            Resources = await _resourceService.GetAllResourcesAsync();
+            Units = await _unitsOMService.GetAllUnitsAsync();
 
-        public async Task<IActionResult> OnPostFilterByResourceAsync(string resourceName)
-        {
-            if (string.IsNullOrWhiteSpace(resourceName))
-            {
-                Balances = await _balanceRepository.GetAllBalancesAsync();
-            }
-            else
-            {
-                Balances = await _balanceRepository.GetBalanceByResourceNameAsync(resourceName);
-            }
-            return Page();
-        }
+            IEnumerable<Balance> query = await _balanceRepository.GetAllBalancesAsync();
 
-        public async Task<IActionResult> OnPostFilterByUnitAsync(string unitName)
-        {
-            if (string.IsNullOrWhiteSpace(unitName))
+            if (SelectedResourceId.HasValue)
             {
-                Balances = await _balanceRepository.GetAllBalancesAsync();
+                query = query.Where(b => b.ResourceId == SelectedResourceId.Value);
             }
-            else
+            if (SelectedUnitId.HasValue)
             {
-                Balances = await _balanceRepository.GetBalanceByUnitNameAsync(unitName);
+                query = query.Where(b => b.UnitsOMId == SelectedUnitId.Value);
             }
-            return Page();
+
+            Balances = query.ToList();
         }
     }
 }

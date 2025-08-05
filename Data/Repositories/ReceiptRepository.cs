@@ -18,6 +18,9 @@ namespace Storage_Management_Application.Data.Repositories
         {
             return await _context.ReceiptDocuments
                 .Include(r => r.ReceiptResources)
+                    .ThenInclude(rr => rr.Resource)
+                .Include(r => r.ReceiptResources)
+                    .ThenInclude(rr => rr.UnitsOM)
                 .ToListAsync();
         }
 

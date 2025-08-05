@@ -1,6 +1,7 @@
 ﻿using Storage_Management_Application.Core.Abstractions;
 using Storage_Management_Application.Core.ServicesAbstractions;
 using Storage_Management_Application.Data.Repositories;
+using Storage_Management_Application.DTO;
 using Storage_Management_Application.Models;
 
 namespace Storage_Management_Application.Services
@@ -19,19 +20,7 @@ namespace Storage_Management_Application.Services
             return await _receiptRepository.GetAllReceipt();
         }
 
-        public async Task CreateReceiptRes(ReceiptResource receiptRes, int receiptDocId)
-        {
-            var newReceiptRes = new ReceiptResource
-            {
-                ReceiptDocumentId = receiptDocId,
-                ResourceId = receiptRes.ResourceId,
-                UnitsOMId = receiptRes.UnitsOMId,
-                Quantity = receiptRes.Quantity
-            };
-            await _receiptRepository.CreateReceipRes(newReceiptRes);
-        }
-
-        public async Task CreateReceiptDoc(ReceiptDocument receiptDoc)
+        public async Task CreateReceiptDoc(ReceiptDocumentDTO receiptDoc)
         {
             var allReceipts = await _receiptRepository.GetAllReceipt();
             if (allReceipts.Any(r => r.Number == receiptDoc.Number))
@@ -40,7 +29,19 @@ namespace Storage_Management_Application.Services
             }
             else
             {
-                await _receiptRepository.CreateReceiptDoc(receiptDoc);
+
+                var receipt = new ReceiptDocument
+                {
+                    Number = receiptDoc.Number,
+                    Date = receiptDoc.Date = DateTime.SpecifyKind(receiptDoc.Date, DateTimeKind.Utc),
+                    ReceiptResources = receiptDoc.ReceiptResources.Select(rr => new ReceiptResource
+                    {
+                        ResourceId = rr.ResourceId,
+                        UnitsOMId = rr.UnitsOMId,
+                        Quantity = rr.Quantity
+                    }).ToList()
+                };
+                await _receiptRepository.CreateReceiptDoc(receipt);
             }
         }
     }

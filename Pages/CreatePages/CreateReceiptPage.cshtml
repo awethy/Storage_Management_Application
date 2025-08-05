@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Создать поступление";
 }
+@if (Model.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
 <form method="post">
     <div class="mb-3 d-flex gap-3">
         <div>
@@ -11,7 +15,7 @@
         </div>
         <div>
             <label>Дата</label>
-            <input type="date" name="Receipt.Date" class="form-control" required />
+            <input type="date" name="Receipt.Date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
         </div>
     </div>
 

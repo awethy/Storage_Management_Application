@@ -26,19 +26,32 @@
                     foreach (var receipt in Model.Receipts)
                     {
                         var resources = receipt.ReceiptResources;
-                        var resourceCount = resources.Count;
 
-                        for (int i = 0; i < resourceCount; i++)
+                        if (resources.Any())
                         {
-                            <tr class="selectable-row">
-                                @if (i == 0)
-                                {
-                                    <td rowspan="@resourceCount">@receipt.Number</td>
-                                    <td rowspan="@resourceCount">@receipt.Date.ToShortDateString()</td>
-                                }
-                                <td>@resources[i].Resource.Name</td>
-                                <td>@resources[i].UnitsOM.Name</td>
-                                <td>@resources[i].Quantity</td>
+                            var resourceCount = resources.Count;
+                            bool firstRow = true;
+                            foreach (var res in resources)
+                            {
+                                <tr class="selectable-row">
+                                    @if (firstRow)
+                                    {
+                                        <td rowspan="@resourceCount">@receipt.Number</td>
+                                        <td rowspan="@resourceCount">@receipt.Date.ToShortDateString()</td>
+                                        firstRow = false;
+                                    }
+                                    <td>@(res.Resource?.Name ?? "-")</td>
+                                    <td>@(res.UnitsOM?.Name ?? "-")</td>
+                                    <td>@res.Quantity</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>@receipt.Number</td>
+                                <td>@receipt.Date.ToShortDateString()</td>
+                                <td colspan="3" class="text-muted text-center">Нет ресурсов</td>
                             </tr>
                         }
                     }
