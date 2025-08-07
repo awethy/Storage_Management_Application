@@ -43,6 +43,7 @@
                     <th>Ресурс</th>
                     <th>Ед. изм.</th>
                     <th>Количество</th>
+                    <th>Действие</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,6 +69,11 @@
                                     <td>@(res.Resource?.Name ?? "-")</td>
                                     <td>@(res.UnitsOM?.Name ?? "-")</td>
                                     <td>@res.Quantity</td>
+                                    <td>
+                                        <a asp-page="/EditPages/EditReceiptPage" asp-route-id="@receipt.Id" class="btn btn-warning btn-sm">
+                                            Изменить
+                                        </a>
+                                    </td>
                                 </tr>
                             }
                         }
@@ -76,7 +82,7 @@
                             <tr>
                                 <td>@receipt.Number</td>
                                 <td>@receipt.Date.ToShortDateString()</td>
-                                <td colspan="3" class="text-muted text-center">Нет ресурсов</td>
+                                <td colspan="4" class="text-muted text-center">Нет ресурсов</td>
                             </tr>
                         }
                     }

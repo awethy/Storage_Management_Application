@@ -24,6 +24,22 @@ namespace Storage_Management_Application.Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<ReceiptDocument> GetReceiptById(int id)
+        {
+            return await _context.ReceiptDocuments
+                .Include(r => r.ReceiptResources)
+                    .ThenInclude(rr => rr.Resource)
+                .Include(r => r.ReceiptResources)
+                    .ThenInclude(rr => rr.UnitsOM)
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
+        public async Task UpdateReceipt(ReceiptDocument receipt)
+        {
+            _context.ReceiptDocuments.Update(receipt);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task CreateReceiptDoc(ReceiptDocument receiptDoc)
         {
             _context.ReceiptDocuments.Add(receiptDoc);
