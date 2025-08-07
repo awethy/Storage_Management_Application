@@ -1,5 +1,6 @@
 ﻿using Storage_Management_Application.Core.Abstractions;
 using Storage_Management_Application.Core.ServicesAbstractions;
+using Storage_Management_Application.Data.Repositories;
 using Storage_Management_Application.Models;
 
 namespace Storage_Management_Application.Services
@@ -62,6 +63,12 @@ namespace Storage_Management_Application.Services
             if (unit == null)
             {
                 throw new KeyNotFoundException($"Единица измерения с ID {id} не найдена.");
+            }
+            // Проверка на наличие связанных ресурсов
+            bool isUsed = await _unitRepository.IsUsedInAnyRelationAsync(id);
+            if (isUsed)
+            {
+                throw new InvalidOperationException($"Единица измерения {unit.Name} используется в других ресурсах и не может быть удалена.");
             }
             await _unitRepository.DeleteAsync(id);
         }

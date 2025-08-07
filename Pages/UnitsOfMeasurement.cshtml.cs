@@ -21,8 +21,33 @@ namespace Storage_Management_Application.Pages
         public async Task<IActionResult> OnPostArchiveAsync(int selectedUnitId)
         {
             //логика архивирования единицы
-            await _unitsOMService.InActiveUnit(selectedUnitId);
-            return RedirectToPage();
+            try
+            {
+                await _unitsOMService.InActiveUnit(selectedUnitId);
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                await OnGetAsync();
+                return Page();
+            }
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int selectedUnitId)
+        {
+            // Логика удаления единицы измерения
+            try
+            {
+                await _unitsOMService.DeleteUnitAsync(selectedUnitId);
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                await OnGetAsync();
+                return Page();
+            }
         }
 
         public async Task OnGetAsync()

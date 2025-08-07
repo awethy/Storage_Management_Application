@@ -4,8 +4,33 @@
     ViewData["Title"] = "Поступления";
 }
 
+<h2 class="text-center mb-4">Поступления</h2>
 
-    <h2 class="text-center mb-4">Поступления</h2>
+<form method="get" class="mb-3">
+    <div>
+        <div class="form-group col-md-4">
+            <div>
+                <label for="DateFrom">Дата с:</label>
+                <input type="date" asp-for="DateFrom" id="DateFrom" class="form-control" />
+            </div>
+            <div>
+                <label for="DateTo">Дата по:</label>
+                <input type="date" asp-for="DateTo" id="DateTo" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <select asp-for="SelectedUnitId" id="SelectedUnitId"
+                    asp-items="@(new MultiSelectList(Model.Units, "Id", "Name", Model.SelectedUnitId))" multiple>
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            <select asp-for="SelectedResourceId" id="SelectedResourceId"
+                    asp-items="@(new MultiSelectList(Model.Resources, "Id", "Name", Model.SelectedResourceId))" multiple>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Фильтровать</button>
+    </div>
+</form>
 
 <a asp-page="/CreatePages/CreateReceiptPage" class="btn btn-primary mb-3">Добавить поступление</a>
 
@@ -33,7 +58,7 @@
                             bool firstRow = true;
                             foreach (var res in resources)
                             {
-                                <tr class="selectable-row">
+                                <tr>
                                     @if (firstRow)
                                     {
                                         <td rowspan="@resourceCount">@receipt.Number</td>
@@ -65,4 +90,25 @@
             </tbody>
         </table>
     </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const element = document.getElementById('SelectedResourceId');
+        const choices = new Choices(element, {
+            removeItemButton: true,
+            placeholderValue: 'Выберите ресурсы',
+            searchPlaceholderValue: 'Поиск...',
+            shouldSort: false
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const element = document.getElementById('SelectedUnitId');
+        const choices = new Choices(element, {
+            removeItemButton: true,
+            placeholderValue: 'Выберите ед.изм.',
+            searchPlaceholderValue: 'Поиск...',
+            shouldSort: false
+        });
+    });
+</script>
 

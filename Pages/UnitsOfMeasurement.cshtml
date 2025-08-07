@@ -8,13 +8,37 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <button class="btn btn-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#addUnitModal" id="addBtn">Добавить</button>
         <button class="btn btn-secondary" onclick="toggleArchiveSection()" id="archiveBtn">К архиву</button>
+        <button class="btn btn-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#addUnitModal" id="addBtn">Добавить</button>
+        <button style="display: none" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" id="delArchBtn">
+            Удалить
+        </button>
     </div>
     <form method="post" asp-page-handler="Archive" class="d-inline">
         <input type="hidden" id="selectedUnitId" name="selectedUnitId" />
         <button class="btn btn-warning" type="submit" id="archivateBtn" disabled>Убрать в архив</button>
     </form>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Подтверждение удаления</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить этот элемент?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" name="selectedUnitId" id="selectedUnitIdArch" />
+                    <button class="btn btn-danger" onclick="deleteArchUnit()">Удалить</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @* Модальное окно для добавления новой единицы измерения *@
@@ -86,7 +110,7 @@
             {
                 foreach (var unit in Model.InActiveUnits)
                 {
-                    <tr>
+                    <tr class="selectable-row" data-unit-id="@unit.Id">
                         <td>@unit.Name</td>
                     </tr>
                 }
@@ -112,12 +136,16 @@
                 addBtn.style.display = "none";
                 archiveBtn.textContent = "К активным";
                 archivateBtn.style.display = "none";
+                delArchBtn.style.display = "inline-block";
+                delArchBtn.disabled = true;
             } else {
                 inactiveSection.style.display = "none";
                 activeSection.style.display = "block";
                 addBtn.style.display = "inline-block";
                 archiveBtn.textContent = "К архиву";
                 archivateBtn.style.display = "inline-block";
+                delArchBtn.style.display = "none";
+                archivateBtn.disabled = true;
             }
         }
     </script>
@@ -130,8 +158,10 @@
                 row.classList.add('table-active');
                 // Установить выбранный ID в скрытое поле
                 document.getElementById('selectedUnitId').value = row.getAttribute('data-unit-id');
+                document.getElementById('selectedUnitIdArch').value = row.getAttribute('data-unit-id');
                 // Активировать кнопку архивирования
                 document.getElementById('archivateBtn').disabled = false;
+                document.getElementById('delArchBtn').disabled = false;
             });
         });
     </script>

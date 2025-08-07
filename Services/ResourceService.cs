@@ -63,6 +63,10 @@ namespace Storage_Management_Application.Services
             {
                 throw new InvalidOperationException($"Ресурс с ID '{id}' не найден.");
             }
+            // Проверка
+            bool isUsed = await _resourceRepository.IsUsedInAnyRelationAsync(id);
+            if (isUsed)
+                throw new InvalidOperationException($"Ресурс '{resource.Name}' связан с другими данными.");
             await _resourceRepository.DeleteAsync(id);
         }
 

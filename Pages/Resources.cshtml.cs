@@ -22,8 +22,33 @@ namespace Storage_Management_Application.Pages
         public async Task<IActionResult> OnPostArchiveAsync(int selectedResourceId)
         {
             // Логика архивирования ресурса
-            await _resourceService.InActiveResourceAsync(selectedResourceId);
-            return RedirectToPage();
+            try
+            {
+                await _resourceService.InActiveResourceAsync(selectedResourceId);
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                await OnGetAsync();
+                return Page();
+            }
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int selectedResourceId)
+        {
+            // Логика удаления ресурса
+            try
+            {
+                await _resourceService.DeleteResourceAsync(selectedResourceId);
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                await OnGetAsync();
+                return Page();
+            }
         }
 
         public async Task OnGetAsync()

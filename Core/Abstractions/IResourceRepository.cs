@@ -1,4 +1,5 @@
-﻿using Storage_Management_Application.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Storage_Management_Application.Models;
 
 namespace Storage_Management_Application.Core.Abstractions
 {
@@ -13,5 +14,6 @@ namespace Storage_Management_Application.Core.Abstractions
         Task DeleteAsync(int id);
         Task InActive(int id);
         Task Active(int id);
+        Task<bool> IsUsedInAnyRelationAsync(int resourceId);
     }
 }

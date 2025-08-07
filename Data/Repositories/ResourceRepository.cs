@@ -70,5 +70,22 @@ namespace Storage_Management_Application.Data.Repositories
             context.Resources.Update(resource);
             await context.SaveChangesAsync();
         }
+
+        public async Task<bool> IsUsedInAnyRelationAsync(int resourceId)
+        {
+            // Проверяем, есть ли связи с другими таблицами
+            bool isUsedInReceiptRes = await context.ReceiptResources
+                .AnyAsync(p => p.ResourceId == resourceId);
+
+            bool isUsedInBalances = await context.Balances
+                .AnyAsync(t => t.ResourceId == resourceId);
+
+            bool isUsedInShipmentRes = await context.ShipmentResources
+                .AnyAsync(a => a.ResourceId == resourceId);
+
+            // Если ресурс используется хотя бы в одной из таблиц → вернём true
+            return isUsedInReceiptRes || isUsedInBalances || isUsedInShipmentRes;
+        }
+
     }
 }
