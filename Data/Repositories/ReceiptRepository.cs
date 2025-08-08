@@ -34,6 +34,16 @@ namespace Storage_Management_Application.Data.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
+        public async Task DeleteReceipt(int id)
+        {
+            var receipt = await _context.ReceiptDocuments.FindAsync(id);
+            if (receipt != null)
+            {
+                _context.ReceiptDocuments.Remove(receipt);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task UpdateReceipt(ReceiptDocument receipt)
         {
             _context.ReceiptDocuments.Update(receipt);

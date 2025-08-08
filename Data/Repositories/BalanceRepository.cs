@@ -22,6 +22,13 @@ namespace Storage_Management_Application.Data.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Balance> GetBalanceByIdAsync(int id)
+        {
+            return await context.Balances
+                .Include(b => b.Resource)
+                .Include(b => b.UnitsOM)
+                .FirstOrDefaultAsync(b => b.Id == id);
+        }
         public async Task<List<Balance>> GetBalanceByResourceNameAsync(string resourceName)
         {
             return await context.Balances
@@ -39,6 +46,16 @@ namespace Storage_Management_Application.Data.Repositories
                 .Where(b => b.UnitsOM.Name == unitName)
                 .ToListAsync();
         }
+
+        public async Task DeleteBalance(int id)
+        {
+            var balance = await context.Balances.FindAsync(id);
+            if (balance != null)
+            {
+                context.Balances.Remove(balance);
+                await context.SaveChangesAsync();
+            }
+        }   
 
         public async Task CreateBalance(Balance balance)
         {

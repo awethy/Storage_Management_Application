@@ -9,10 +9,12 @@ namespace Storage_Management_Application.Services
     public class ReceiptService : IReceiptService
     {
         private readonly IReceiptRepository _receiptRepository;
+        private readonly IBalanceService _balanceService;
 
-        public ReceiptService(IReceiptRepository receiptRepository)
+        public ReceiptService(IReceiptRepository receiptRepository, IBalanceService balanceService)
         {
             _receiptRepository = receiptRepository;
+            _balanceService = balanceService;
         }
 
         public async Task<List<ReceiptDocument>> GetReceipts()
@@ -30,6 +32,26 @@ namespace Storage_Management_Application.Services
             return receipt;
         }
 
+        public async Task DeleteReceipt(int id)
+        {
+            var receipt = await _receiptRepository.GetReceiptById(id);
+            if (receipt == null)
+            {
+                throw new KeyNotFoundException($"Поступление с ID '{id}' не найдено.");
+            }
+            foreach (var res in receipt.ReceiptResources)
+            {
+                var balanceToRemove = new Balance
+                {
+                    ResourceId = res.ResourceId,
+                    UnitsOMId = res.UnitsOMId,
+                    Quantity = res.Quantity
+                };
+                await _balanceService.RemoveFromBalance(balanceToRemove);
+            }
+            await _receiptRepository.DeleteReceipt(id);
+        }
+
         public async Task UpdateReceipt(ReceiptDocumentDTO receiptDoc, int Id)
         {
             var existingReceipt = await _receiptRepository.GetReceiptById(Id);
@@ -43,6 +65,18 @@ namespace Storage_Management_Application.Services
             {
                 throw new InvalidOperationException($"Поступление с номером '{receiptDoc.Number}' уже существует.");
             }
+
+            foreach (var oldRes in existingReceipt.ReceiptResources)
+            {
+                var balanceToRemove = new Balance
+                {
+                    ResourceId = oldRes.ResourceId,
+                    UnitsOMId = oldRes.UnitsOMId,
+                    Quantity = oldRes.Quantity
+                };
+                await _balanceService.RemoveFromBalance(balanceToRemove);
+            }
+
             existingReceipt.Number = receiptDoc.Number;
             existingReceipt.Date = DateTime.SpecifyKind(receiptDoc.Date, DateTimeKind.Utc);
             existingReceipt.ReceiptResources = receiptDoc.ReceiptResources.Select(rr => new ReceiptResource
@@ -52,6 +86,17 @@ namespace Storage_Management_Application.Services
                 Quantity = rr.Quantity
             }).ToList();
             await _receiptRepository.UpdateReceipt(existingReceipt);
+
+            foreach (var newRes in receiptDoc.ReceiptResources)
+            {
+                var balanceToAdd = new Balance
+                {
+                    ResourceId = newRes.ResourceId,
+                    UnitsOMId = newRes.UnitsOMId,
+                    Quantity = newRes.Quantity
+                };
+                await _balanceService.UpdateBalance(balanceToAdd);
+            }
         }
 
         public async Task CreateReceiptDoc(ReceiptDocumentDTO receiptDoc)

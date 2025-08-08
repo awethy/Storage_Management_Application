@@ -13,20 +13,79 @@ namespace Storage_Management_Application.Services
             this.balanceRepository = balanceRepository;
         }
 
+        public async Task<Balance> GetBalanceById(int id)
+        {
+            try
+            {
+                return await balanceRepository.GetBalanceByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the balance.", ex);
+            }
+        }
+
+        public async Task UpdateBalance(Balance balance)
+        {
+            try
+            {
+                var allBalances = await balanceRepository.GetAllBalancesAsync();
+                var existingBalance = allBalances.FirstOrDefault(b => b.ResourceId == balance.ResourceId && b.UnitsOMId == balance.UnitsOMId);
+                
+                if (existingBalance != null)
+                {
+                    existingBalance.Quantity += balance.Quantity;
+                    await balanceRepository.UpdateBalance(existingBalance);
+                }
+                else
+                {
+                    await CreateBalance(balance);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the balance.", ex);
+            }
+        }
+
+        public async Task RemoveFromBalance(Balance balance)
+        {
+            try
+            {
+                var allBalances = await balanceRepository.GetAllBalancesAsync();
+                var existingBalance = allBalances.FirstOrDefault(b => b.ResourceId == balance.ResourceId && b.UnitsOMId == balance.UnitsOMId);
+                        
+                if (existingBalance != null)
+                {
+                    existingBalance.Quantity -= balance.Quantity;
+                    if (existingBalance.Quantity < 0)
+                    {
+                        throw new InvalidOperationException("Insufficient balance to perform this operation.");
+                    }
+                    else if (existingBalance.Quantity == 0)
+                    {
+                        await balanceRepository.DeleteBalance(existingBalance.Id);
+                        return;
+                    }
+                    else
+                    {
+                        await balanceRepository.UpdateBalance(existingBalance);
+                    }
+                }
+                else
+                {
+                    await CreateBalance(balance);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the balance.", ex);
+            }
+        }
+
         public async Task CreateBalance(Balance balance)
         {
-            var allBalances = await balanceRepository.GetAllBalancesAsync();
-            var existingBalance = allBalances.FirstOrDefault(b => b.ResourceId == balance.ResourceId && b.UnitsOMId == balance.UnitsOMId);
-
-            if (existingBalance != null)
-            {
-                existingBalance.Quantity = existingBalance.Quantity + balance.Quantity;
-                await balanceRepository.UpdateBalance(existingBalance);
-            }
-            else
-            {
-                await balanceRepository.CreateBalance(balance);
-            }
+            await balanceRepository.CreateBalance(balance);
         }
     }
 }

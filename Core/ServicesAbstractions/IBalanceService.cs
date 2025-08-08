@@ -5,5 +5,7 @@ namespace Storage_Management_Application.Core.ServicesAbstractions
     public interface IBalanceService
     {
         Task CreateBalance(Balance balance);
+        Task UpdateBalance(Balance balance);
+        Task RemoveFromBalance(Balance balance);
     }
 }

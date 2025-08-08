@@ -6,6 +6,7 @@ namespace Storage_Management_Application.Core.Abstractions
     {
         Task<List<ReceiptDocument>> GetAllReceipt();
         Task<ReceiptDocument> GetReceiptById(int id);
+        Task DeleteReceipt(int id);
         Task UpdateReceipt(ReceiptDocument receipt);
         Task CreateReceiptDoc(ReceiptDocument receiptDoc);
         Task CreateReceipRes(ReceiptResource receiptRes);
