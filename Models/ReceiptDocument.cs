@@ -11,6 +11,6 @@ namespace Storage_Management_Application.Models
         public List<ReceiptResource> ReceiptResources
         {
             get; set;
-        }
+        } = new();
     }
 }
