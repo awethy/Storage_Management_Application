@@ -33,21 +33,6 @@
 
 ---
 
-Storage_Management_Application/
-├── Core/               — бизнес-логика
-├── DTO/                — объекты передачи данных
-├── Data/               — контексты и миграции
-├── Models/             — модели БД
-├── Pages/              — Razor Pages (UI)
-├── Properties/
-├── Services/           — сервисный слой
-├── wwwroot/            — статические файлы (CSS, JS)
-├── Program.cs
-├── appsettings.json
-└── README.md
-
----
-
 ## 💡 Почему именно этот подход?
 
 ### 🏛 Clean Architecture  
@@ -64,4 +49,19 @@ Storage_Management_Application/
 
 ### 🧩 LINQ  
 Лаконичные и выразительные запросы к данным без лишнего «шумного» кода.
+
+---
+
+- Storage_Management_Application/
+- ├── Core/               — **бизнес-логика**
+- ├── DTO/                — **объекты передачи данных**
+- ├── Data/               — **контексты и миграции**
+- ├── Models/             — **модели БД**
+- ├── Pages/              — **Razor Pages (UI)**
+- ├── Properties/
+- ├── Services/           — **сервисный слой**
+- ├── wwwroot/            — **статические файлы (CSS, JS)**
+- ├── Program.cs
+- ├── appsettings.json
+- └── README.md
 
