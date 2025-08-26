@@ -87,16 +87,17 @@ namespace Storage_Management_Application.Services
             }).ToList();
             await _receiptRepository.UpdateReceipt(existingReceipt);
 
-            foreach (var newRes in receiptDoc.ReceiptResources)
+            var balancesToUpdate = receiptDoc.ReceiptResources
+            .GroupBy(r => new { r.ResourceId, r.UnitsOMId })
+            .Select(g => new Balance
             {
-                var balanceToAdd = new Balance
-                {
-                    ResourceId = newRes.ResourceId,
-                    UnitsOMId = newRes.UnitsOMId,
-                    Quantity = newRes.Quantity
-                };
-                await _balanceService.UpdateBalance(balanceToAdd);
-            }
+                ResourceId = g.Key.ResourceId,
+                UnitsOMId = g.Key.UnitsOMId,
+                Quantity = g.Sum(x => x.Quantity)
+            })
+            .ToList();
+
+            await _balanceService.PlusToBalances(balancesToUpdate);
         }
 
         public async Task CreateReceiptDoc(ReceiptDocumentDTO receiptDoc)

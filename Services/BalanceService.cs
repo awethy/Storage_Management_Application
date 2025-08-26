@@ -25,12 +25,11 @@ namespace Storage_Management_Application.Services
             }
         }
 
-        public async Task UpdateBalance(Balance balance)
+        public async Task PlusToBalance(Balance balance)
         {
             try
             {
-                var allBalances = await balanceRepository.GetAllBalancesAsync();
-                var existingBalance = allBalances.FirstOrDefault(b => b.ResourceId == balance.ResourceId && b.UnitsOMId == balance.UnitsOMId);
+                var existingBalance = await balanceRepository.GetBalanceByResourceAndUnitIdAsync(balance.ResourceId, balance.UnitsOMId);
                 
                 if (existingBalance != null)
                 {
@@ -48,12 +47,23 @@ namespace Storage_Management_Application.Services
             }
         }
 
+        public async Task PlusToBalances(List<Balance> balances)
+        {
+            try
+            {
+                    await balanceRepository.PlusToBalances(balances);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the balances.", ex);
+            }
+        }
+
         public async Task RemoveFromBalance(Balance balance)
         {
             try
             {
-                var allBalances = await balanceRepository.GetAllBalancesAsync();
-                var existingBalance = allBalances.FirstOrDefault(b => b.ResourceId == balance.ResourceId && b.UnitsOMId == balance.UnitsOMId);
+                var existingBalance = await balanceRepository.GetBalanceByResourceAndUnitIdAsync(balance.ResourceId, balance.UnitsOMId);
                         
                 if (existingBalance != null)
                 {
